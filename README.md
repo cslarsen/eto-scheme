@@ -12,5 +12,5 @@ Requirements
 
 License
 ------
-Copyright (C) 2015 Christian Stigen Larsen
+Copyright (C) 2015 Christian Stigen Larsen  
 Distributed under the LGPL v2 or later.
