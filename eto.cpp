@@ -1,5 +1,9 @@
 #include <eto/eto.hpp>
 
+#ifdef __GNUG__
+#include <cxxabi.h>
+#endif
+
 namespace eto {
 
 #ifndef __GNUG__

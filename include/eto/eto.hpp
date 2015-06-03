@@ -4,12 +4,9 @@
 #include <sstream>
 #include <utility>
 #include <iostream>
+#include <cstdint>
 
 #include <gmpxx.h>
-
-#ifdef __GNUG__
-#include <cxxabi.h>
-#endif
 
 #define __ETO_DECLARE_COMPOUND_OPERATOR(__class, __member, __operator) \
   __class& operator __operator (const __class& p) \
@@ -47,7 +44,11 @@ public:
   {
   }
 
-  virtual std::ostream& print(std::ostream& s) const = 0;
+  virtual std::ostream& print(std::ostream& s) const
+  {
+    s << "#<object " << this << ">";
+    return s;
+  }
 
   virtual ~object()
   {

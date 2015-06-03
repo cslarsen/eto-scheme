@@ -59,5 +59,10 @@ int main()
     TEST(cons(a*a, a+b), "(100 . 30)");
   }
 
+  TEST(eto::string(type_name(integer(100)+integer(200))), "eto::integer");
+  TEST(eto::string(type_name(real(100)+real(200))), "eto::real");
+  TEST(eto::string(type_name(rational(100,2)+rational(200,2))), "eto::rational");
+  TEST(eto::string(type_name(eto::string("hello"))), "eto::string");
+
   cout << "1.." << tests << endl;
 }
