@@ -38,7 +38,12 @@ std::string str(const var& o)
 
 var cons(const var& car, const var& cdr)
 {
-  return var(var(car.p), var(cdr.p));
+  return var::pair(var(car.p), var(cdr.p));
+}
+
+var cons(const var& car)
+{
+  return var::pair(var(car.p));
 }
 
 } // namespace eto

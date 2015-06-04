@@ -272,14 +272,19 @@ public:
   {
   }
 
-  var(var& car, var& cdr):
-    p(new pair(car.p, cdr.p))
+  static var real(const double& v)
   {
+    return var(new eto::real(v));
   }
 
-  var(var&& car, var&& cdr):
-    p(new pair(car.p, cdr.p))
+  static var pair(var&& car, var&& cdr)
   {
+    return var(new eto::pair(car.p, cdr.p));
+  }
+
+  static var pair(var&& car)
+  {
+    return var(new eto::pair(car.p));
   }
 
   var(const var& v):
@@ -308,6 +313,7 @@ public:
   }
 
   friend var cons(const var&, const var&);
+  friend var cons(const var&);
 };
 
 std::string demangled(const char* s);
@@ -319,6 +325,7 @@ std::string type_name(const X& x)
 }
 
 var cons(const var&, const var&);
+var cons(const var&);
 
 std::string str(const object&);
 std::string str(const var&);
