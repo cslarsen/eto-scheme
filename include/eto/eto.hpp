@@ -5,6 +5,7 @@
 #include <utility>
 #include <iostream>
 #include <cstdint>
+#include <typeinfo>
 
 #include <gmpxx.h>
 
