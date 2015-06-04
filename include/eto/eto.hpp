@@ -6,6 +6,11 @@
 #include <iostream>
 #include <cstdint>
 
+/*
+ * TODO:
+ * - Printing blows up the call stack for lists. Fix that with a loop.
+ */
+
 #include <gmpxx.h>
 
 #define __ETO_DECLARE_COMPOUND_OPERATOR(__class, __member, __operator) \
@@ -174,49 +179,50 @@ public:
 
   virtual std::ostream& print(std::ostream& s) const
   {
-    return s << static_cast<const std::string&>(*this);
+    return s << "\"" << static_cast<const std::string&>(*this) << "\"";
   }
 };
 
-class cons : public object {
+class pair : public object {
 public:
   object* car;
   object* cdr;
 
-  cons(object* car_, object* cdr_ = nullptr):
+  pair(object* car_, object* cdr_ = nullptr):
     car(car_),
     cdr(cdr_)
   {
   }
 
-  cons(object& car_, object& cdr_):
-    cons(&car_, &cdr_)
+  pair(object& car_, object& cdr_):
+    pair(&car_, &cdr_)
   {
   }
 
-  cons(object&& car_):
-    cons(&car_)
+  pair(object&& car_):
+    pair(&car_)
   {
   }
 
-  cons(object&& car_, object&& cdr_):
-    cons(&car_, &cdr_)
+  pair(object&& car_, object&& cdr_):
+    pair(&car_, &cdr_)
   {
   }
 
-  cons(object&& car_, object& cdr_):
-    cons(&car_, &cdr_)
+  pair(object&& car_, object& cdr_):
+    pair(&car_, &cdr_)
   {
   }
 
-  cons(object& car_, object&& cdr_):
-    cons(&car_, &cdr_)
+  pair(object& car_, object&& cdr_):
+    pair(&car_, &cdr_)
   {
   }
 
-  virtual std::ostream& print(std::ostream& s) const
+  virtual std::ostream& print(std::ostream& s, bool parens) const
   {
-    s << "(";
+    if ( parens )
+      s << "(";
 
     if ( car )
       car->print(s);
@@ -224,18 +230,83 @@ public:
       s << "#<nil>";
 
     if ( cdr ) {
-      s << " . ";
-      cdr->print(s);
+      // if cdr is pair, pass param parens=false
+      eto::pair* p = dynamic_cast<eto::pair*>(cdr);
+      if ( p ) {
+        s << " ";
+        p->print(s, false);
+      } else {
+        s << " . ";
+        cdr->print(s);
+      }
     }
 
-    s << ")";
+    if ( parens )
+      s << ")";
+
     return s;
   }
 
-  friend std::ostream& operator<<(std::ostream& s, const eto::cons& o)
+  virtual std::ostream& print(std::ostream& s) const
+  {
+    return print(s, true);
+  }
+
+  friend std::ostream& operator<<(std::ostream& s, const eto::pair& o)
   {
     return o.print(s);
   }
+};
+
+class var {
+  object* p;
+public:
+  var(const long& v):
+    p(new integer(v))
+  {
+  }
+
+  var(const char* v):
+    p(new eto::string(v))
+  {
+  }
+
+  var(var& car, var& cdr):
+    p(new pair(car.p, cdr.p))
+  {
+  }
+
+  var(var&& car, var&& cdr):
+    p(new pair(car.p, cdr.p))
+  {
+  }
+
+  var(const var& v):
+    p(v.p)
+  {
+  }
+
+  var(const object* p):
+    p(const_cast<object*>(p))
+  {
+  }
+
+  var(const long& dividend, const long& divisor):
+    p(new rational(dividend, divisor))
+  {
+  }
+
+  operator object&()
+  {
+    return *p;
+  }
+
+  friend std::ostream& operator<<(std::ostream& s, const var& v)
+  {
+    return v.p->print(s);
+  }
+
+  friend var cons(const var&, const var&);
 };
 
 std::string demangled(const char* s);
@@ -246,7 +317,10 @@ std::string type_name(const X& x)
   return demangled(typeid(x).name());
 }
 
-std::string str(const object& o);
+var cons(const var&, const var&);
+
+std::string str(const object&);
+std::string str(const var&);
 
 } // namespace eto
 

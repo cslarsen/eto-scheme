@@ -29,4 +29,16 @@ std::string str(const object& o)
   return s.str();
 }
 
+std::string str(const var& o)
+{
+  std::ostringstream s;
+  s << o;
+  return s.str();
+}
+
+var cons(const var& car, const var& cdr)
+{
+  return var(var(car.p), var(cdr.p));
+}
+
 } // namespace eto

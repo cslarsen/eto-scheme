@@ -32,7 +32,7 @@ int main()
     TEST(a, "1111");
     TEST(b, "2222");
     TEST(a+b, "3333");
-    TEST(cons(a,b), "(1111 . 2222)");
+    TEST(eto::pair(a,b), "(1111 . 2222)");
   }
 
   {
@@ -44,25 +44,33 @@ int main()
   }
 
   TEST(real("1.23456"), "1.23456");
-  TEST(eto::string("hello, world!"), "hello, world!");
+  TEST(eto::string("hello, world!"), "\"hello, world!\"");
 
   {
     integer a(10);
     integer b(20);
-    TEST(cons(eto::string("hey")), "(hey)");
-    TEST(cons(eto::string("hey"), integer(10)), "(hey . 10)");
-    TEST(cons(eto::string("hey"), integer(10)), "(hey . 10)");
-    TEST(cons(eto::string("hey"), a), "(hey . 10)");
-    TEST(cons(a, integer(20)), "(10 . 20)");
-    TEST(cons(a, b), "(10 . 20)");
-    TEST(cons(a*a, b), "(100 . 20)");
-    TEST(cons(a*a, a+b), "(100 . 30)");
+    TEST(eto::pair(eto::string("hey")), "(\"hey\")");
+    TEST(eto::pair(eto::string("hey"), integer(10)), "(\"hey\" . 10)");
+    TEST(eto::pair(eto::string("hey"), integer(10)), "(\"hey\" . 10)");
+    TEST(eto::pair(eto::string("hey"), a), "(\"hey\" . 10)");
+    TEST(eto::pair(a, integer(20)), "(10 . 20)");
+    TEST(eto::pair(a, b), "(10 . 20)");
+    TEST(eto::pair(a*a, b), "(100 . 20)");
+    TEST(eto::pair(a*a, a+b), "(100 . 30)");
   }
 
-  TEST(eto::string(type_name(integer(100)+integer(200))), "eto::integer");
-  TEST(eto::string(type_name(real(100)+real(200))), "eto::real");
-  TEST(eto::string(type_name(rational(100,2)+rational(200,2))), "eto::rational");
-  TEST(eto::string(type_name(eto::string("hello"))), "eto::string");
+  TEST(eto::string(type_name(integer(100)+integer(200))), "\"eto::integer\"");
+  TEST(eto::string(type_name(real(100)+real(200))), "\"eto::real\"");
+  TEST(eto::string(type_name(rational(100,2)+rational(200,2))), "\"eto::rational\"");
+  TEST(eto::string(type_name(eto::string("hello"))), "\"eto::string\"");
+
+  TEST(var(123), "123");
+  TEST(var("hello"), "\"hello\"");
+
+  TEST(cons(123, "hey"), "(123 . \"hey\")");
+  TEST(cons(1, cons(2, 3)), "(1 2 . 3)");
+  TEST(cons(1, cons(cons(2, 3), 4)), "(1 (2 . 3) . 4)");
+  TEST(cons("foo", cons(cons("bar", 3), "baz")), "(\"foo\" (\"bar\" . 3) . \"baz\")");
 
   cout << "1.." << tests << endl;
 }
