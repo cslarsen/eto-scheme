@@ -46,4 +46,9 @@ var cons(const var& car)
   return var::pair(var(car.p));
 }
 
+var::var(const std::vector<var>& v):
+  p(new eto::vector(v))
+{
+}
+
 } // namespace eto

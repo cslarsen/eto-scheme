@@ -1,11 +1,12 @@
 #ifndef INC_ETO_HPP_20150603
 #define INC_ETO_HPP_20150603
 
-#include <sstream>
-#include <utility>
-#include <iostream>
 #include <cstdint>
+#include <iostream>
+#include <sstream>
 #include <typeinfo>
+#include <utility>
+#include <vector>
 
 /*
  * TODO:
@@ -272,6 +273,11 @@ public:
   {
   }
 
+  object* ptr()
+  {
+    return p;
+  }
+
   static var real(const double& v)
   {
     return var(new eto::real(v));
@@ -302,6 +308,8 @@ public:
   {
   }
 
+  var(const std::vector<var>& v);
+
   operator object&()
   {
     return *p;
@@ -315,6 +323,34 @@ public:
   friend var cons(const var&, const var&);
   friend var cons(const var&);
 };
+
+class vector : public object {
+  std::vector<object*> v;
+public:
+  vector(const std::vector<var>& v_)
+  {
+    for ( auto i : v_ )
+      v.push_back(const_cast<object*>(i.ptr()));
+  }
+
+  virtual std::ostream& print(std::ostream& s) const
+  {
+    s << "{";
+
+    bool f = true;
+    for ( auto i : v ) {
+      if ( f )
+        f = false;
+      else
+        s << " ";
+      i->print(s);
+    }
+
+    s << "}";
+    return s;
+  }
+};
+
 
 std::string demangled(const char* s);
 

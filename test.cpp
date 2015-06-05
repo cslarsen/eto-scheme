@@ -1,3 +1,4 @@
+#include <vector>
 #include <iostream>
 #include <eto/eto.hpp>
 
@@ -72,6 +73,8 @@ int main()
   TEST(cons(1, cons(cons(2, 3), 4)), "(1 (2 . 3) . 4)");
   TEST(cons("foo", cons(cons("bar", 3), "baz")), "(\"foo\" (\"bar\" . 3) . \"baz\")");
   TEST(cons(1, cons(2, cons(3))), "(1 2 3)");
+
+  TEST(var({1, 2, "hey"}), "{1 2 \"hey\"}");
 
   cout << "1.." << tests << endl;
 }
