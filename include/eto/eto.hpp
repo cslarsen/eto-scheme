@@ -335,7 +335,7 @@ public:
 
   virtual std::ostream& print(std::ostream& s) const
   {
-    s << "{";
+    s << "#(";
 
     bool f = true;
     for ( auto i : v ) {
@@ -346,7 +346,7 @@ public:
       i->print(s);
     }
 
-    s << "}";
+    s << ")";
     return s;
   }
 };
