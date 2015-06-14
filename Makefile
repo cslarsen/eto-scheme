@@ -7,7 +7,7 @@ check: all
 	./test
 
 eto.o: eto.cpp include/eto/eto.hpp
-test.o: eto.o
+test.o: eto.cpp
 test: test.o eto.o
 
 all: $(TARGETS)
