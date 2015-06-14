@@ -38,7 +38,7 @@
     return __class (l.__member __operator r.__member); \
   }
 
-#define __ETO_DECLARE_AFFIX_OPERATOR(__class, __member, __operator) \
+#define __ETO_DECLARE_ADFIX_OPERATOR(__class, __member, __operator) \
   inline __class& operator __operator() \
   { \
     __operator __member; \
@@ -108,8 +108,8 @@ public:
   __ETO_DECLARE_COMPOUND_OPERATOR(integer, z, |=)
   __ETO_DECLARE_COMPOUND_OPERATOR(integer, z, ^=)
 
-  __ETO_DECLARE_AFFIX_OPERATOR(integer, z, ++)
-  __ETO_DECLARE_AFFIX_OPERATOR(integer, z, --)
+  __ETO_DECLARE_ADFIX_OPERATOR(integer, z, ++)
+  __ETO_DECLARE_ADFIX_OPERATOR(integer, z, --)
 };
 
 class rational : public object {
@@ -145,8 +145,8 @@ public:
   __ETO_DECLARE_COMPOUND_OPERATOR(rational, q, *=)
   __ETO_DECLARE_COMPOUND_OPERATOR(rational, q, /=)
 
-  __ETO_DECLARE_AFFIX_OPERATOR(rational, q, ++)
-  __ETO_DECLARE_AFFIX_OPERATOR(rational, q, --)
+  __ETO_DECLARE_ADFIX_OPERATOR(rational, q, ++)
+  __ETO_DECLARE_ADFIX_OPERATOR(rational, q, --)
 };
 
 class real : public object {
@@ -177,8 +177,8 @@ public:
   __ETO_DECLARE_COMPOUND_OPERATOR(real, f, *=)
   __ETO_DECLARE_COMPOUND_OPERATOR(real, f, /=)
 
-  __ETO_DECLARE_AFFIX_OPERATOR(real, f, ++)
-  __ETO_DECLARE_AFFIX_OPERATOR(real, f, --)
+  __ETO_DECLARE_ADFIX_OPERATOR(real, f, ++)
+  __ETO_DECLARE_ADFIX_OPERATOR(real, f, --)
 };
 
 // TODO: utf-8
