@@ -57,19 +57,11 @@ namespace eto {
 // TODO: new/delete for gc
 class object {
 public:
-  object()
-  {
-  }
-
-  virtual std::ostream& print(std::ostream& s) const
-  {
-    s << "#<object " << this << ">";
-    return s;
-  }
-
+  virtual std::ostream& print(std::ostream& s) const = 0;
   virtual ~object()
   {
   }
+
 };
 
 class integer : public object {
