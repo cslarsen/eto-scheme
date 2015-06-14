@@ -11,31 +11,41 @@
 /*
  * TODO:
  * - Printing blows up the call stack for lists. Fix that with a loop.
+ * - rename virtual print() to something else, e.g. stream, to_s?
+ * - see if we can avoid const-casting, I don't like it
+ * - try to reduce number of pair-constructors, don't like to have too many of
+ *   them
+ * - look more into move semantics
+ * - try to remove var; it's another boxing layer that we don't really should
+ *   need (object should be enough). Is it possible to object to create the
+ *   various types? i.e., is it possible for a base class to instantiate itself
+ *   as one of the children types without using static methods?
  */
 
 #include <gmpxx.h>
 
 #define __ETO_DECLARE_COMPOUND_OPERATOR(__class, __member, __operator) \
-  __class& operator __operator (const __class& p) \
+  inline __class& operator __operator (const __class& p) \
   { \
     __member __operator p.__member; \
     return *this; \
   }
 
 #define __ETO_DECLARE_OPERATOR(__class, __member, __operator) \
-  friend __class operator __operator (const __class& l, const __class& r) \
+  inline friend __class operator __operator (const __class& l, \
+                                             const __class& r) \
   { \
     return __class (l.__member __operator r.__member); \
   }
 
-#define __ETO_DECLARE_FIX_OPERATOR(__class, __member, __operator) \
-  __class& operator __operator() \
+#define __ETO_DECLARE_AFFIX_OPERATOR(__class, __member, __operator) \
+  inline __class& operator __operator() \
   { \
     __operator __member; \
     return *this; \
   } \
   \
-  __class operator __operator(int) \
+  inline __class operator __operator(int) \
   { \
     __class before = __class(*this); \
     __operator __member; \
@@ -98,8 +108,8 @@ public:
   __ETO_DECLARE_COMPOUND_OPERATOR(integer, z, |=)
   __ETO_DECLARE_COMPOUND_OPERATOR(integer, z, ^=)
 
-  __ETO_DECLARE_FIX_OPERATOR(integer, z, ++)
-  __ETO_DECLARE_FIX_OPERATOR(integer, z, --)
+  __ETO_DECLARE_AFFIX_OPERATOR(integer, z, ++)
+  __ETO_DECLARE_AFFIX_OPERATOR(integer, z, --)
 };
 
 class rational : public object {
@@ -135,8 +145,8 @@ public:
   __ETO_DECLARE_COMPOUND_OPERATOR(rational, q, *=)
   __ETO_DECLARE_COMPOUND_OPERATOR(rational, q, /=)
 
-  __ETO_DECLARE_FIX_OPERATOR(rational, q, ++)
-  __ETO_DECLARE_FIX_OPERATOR(rational, q, --)
+  __ETO_DECLARE_AFFIX_OPERATOR(rational, q, ++)
+  __ETO_DECLARE_AFFIX_OPERATOR(rational, q, --)
 };
 
 class real : public object {
@@ -167,8 +177,8 @@ public:
   __ETO_DECLARE_COMPOUND_OPERATOR(real, f, *=)
   __ETO_DECLARE_COMPOUND_OPERATOR(real, f, /=)
 
-  __ETO_DECLARE_FIX_OPERATOR(real, f, ++)
-  __ETO_DECLARE_FIX_OPERATOR(real, f, --)
+  __ETO_DECLARE_AFFIX_OPERATOR(real, f, ++)
+  __ETO_DECLARE_AFFIX_OPERATOR(real, f, --)
 };
 
 // TODO: utf-8
